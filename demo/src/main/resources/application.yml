@@ -1,0 +1,28 @@
+spring:
+  jpa.hibernate.ddl-auto: update
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+pw.pepper: 3kFlh3C4Yjyktw320AV6
+
+---
+spring:
+  datasource:
+    username: test
+    password: test
+    url: jdbc:h2:mem:testdb
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+
+  config:
+    activate:
+      on-profile: test
