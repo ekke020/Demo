@@ -31,7 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+node_modules/
 
-src/main/resources/application.yml
-src/main/resources/base64.properties
 logfile*
