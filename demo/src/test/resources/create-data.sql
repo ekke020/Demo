@@ -22,3 +22,83 @@ VALUES
         '79f88e368fb6c33ff0c6a3fc289a0d0e',
         '97c0fddf8d41d3430152fe9eebcde1721b2a6c0a3391cf9ba1cbb4336edf412b'
     );
+
+INSERT INTO
+    PRODUCT (id, base64, name, price)
+VALUES
+    (
+        4,
+        'awndandakoamdwamdadwadoad7991823',
+        'Mango',
+        15.9
+    ),
+    (
+        5,
+        'könmawldnadjaidja00112adawawadasd',
+        'Banana',
+        22.0
+    ),
+    (
+        6,
+        'knajdnawipdanpåawokdp001ölmawdawdklöm',
+        'Apple',
+        11.99
+    );
+INSERT INTO
+    ORDER_TABLE (id, created_at, user_id)
+VALUES
+    (
+        7,
+        CURRENT_TIMESTAMP(),
+        1
+    ),
+    (
+        8,
+        CURRENT_TIMESTAMP(),
+        1
+    ),
+    (
+        9,
+        CURRENT_TIMESTAMP(),
+        1
+    ),
+    (
+        10,
+        CURRENT_TIMESTAMP(),
+        2
+    );
+INSERT INTO
+    ORDER_TABLE_PRODUCTS (order_id, products_id)
+VALUES
+    (
+        7,
+        4
+    ),
+    (
+        7,
+        5
+    ),
+    (
+        8,
+        4
+    ),
+    (
+        8,
+        6
+    ),
+    (
+        9,
+        4
+    ),
+    (
+        9,
+        5
+    ),
+    (
+        9,
+        6
+    ),
+    (
+        10,
+        6
+    );
