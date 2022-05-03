@@ -1,10 +1,9 @@
 spring:
   jpa.hibernate.ddl-auto: update
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/demo}
+    username: ${DATABASE_USERNAME:root}
+    password: ${DATABASE_PASSWORD:lol}
 pw.pepper: 3kFlh3C4Yjyktw320AV6
 
 ---
@@ -20,8 +19,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
   h2:
-    console:
-      enabled: true
+    console.enabled: true
 
   config:
     activate:
