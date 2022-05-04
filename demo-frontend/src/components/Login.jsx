@@ -7,17 +7,24 @@ const Login = () => {
   const login = () => {};
 
   return (
-    <div>
-      <form className='flex flex-col' onSubmit={login}>
+    <div className='shadow-xl w-96 mt-4 rounded-xl bg-warm-orange/75'>
+      <form className='flex flex-col items-center' onSubmit={login}>
         <input
-          className='text-center'
+          className='
+            bg-warm-white text-center mt-6 border-2 rounded-md
+            focus:invalid:border-pink-500 focus:invalid:ring-pink-500
+            invalid:border-pink-500 invalid:text-pink-600
+            border-warm-pink w-64 focus:outline-none focus:border-zinc-500'
           type='email'
           name='email'
+          autocomplete='off'
           placeholder='Email'
           onChange={({ target }) => setEmail(target.value)}
         />
         <input
-          className='text-center'
+          className='
+            bg-warm-white text-center mb-6 mt-3 border-2 rounded-md 
+            border-warm-pink w-64 focus:outline-none focus:border-zinc-500'
           type='password'
           name='password'
           placeholder='Password'
@@ -26,7 +33,7 @@ const Login = () => {
         <input
           type='submit'
           value='Login'
-          className='bg-black text-neutral-100'
+          className='rounded shadow border-warm-pink bg-warm-orange text-neutral-100 w-40 mb-6'
         />
       </form>
     </div>
