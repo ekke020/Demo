@@ -36,8 +36,9 @@ public class UserController extends BaseController<User, UserDto, UserService> {
     }
 
     @PostMapping("/login")
-    public UserDto login(@Valid @RequestBody UserLoginDto userLoginDto) {
-        return service.login(userLoginDto);
+    public ResponseEntity<UserDto> login(@Valid @RequestBody UserLoginDto userLoginDto) {
+        UserDto dto = service.login(userLoginDto);
+        return ResponseEntity.status(201).body(dto);
     }
 
 }
