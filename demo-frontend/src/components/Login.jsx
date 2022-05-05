@@ -1,10 +1,18 @@
+import axios from 'axios';
 import { useState } from 'react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const login = () => {};
+  const login = async (event) => {
+    event.preventDefault();
+    const response = await axios.post('http://localhost:8080/user/login', {
+      email: email,
+      password: password,
+    });
+    console.log(response);
+  };
 
   return (
     <div className='shadow-xl w-96 mt-4 rounded-xl bg-warm-orange/75'>
@@ -17,7 +25,7 @@ const Login = () => {
             border-warm-pink w-64 focus:outline-none focus:border-zinc-500'
           type='email'
           name='email'
-          autocomplete='off'
+          autoComplete='off'
           placeholder='Email'
           onChange={({ target }) => setEmail(target.value)}
         />
