@@ -20,6 +20,8 @@ public class User {
     private String email;
     private String salt;
     private String hash;
+    @Transient
+    private String token;
 
     public User(Long id, String name, String email) {
         this.id = id;
