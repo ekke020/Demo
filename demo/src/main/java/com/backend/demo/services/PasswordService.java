@@ -1,8 +1,8 @@
 package com.backend.demo.services;
 
+import com.backend.demo.config.Properties;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -14,10 +14,10 @@ import java.security.SecureRandom;
 @Service
 public class PasswordService {
 
-    @Value("${pw.pepper}")
-    private String pepper;
+    private final Properties properties;
 
-    public PasswordService() {
+    public PasswordService(Properties properties) {
+        this.properties = properties;
     }
 
     public String generateSalt() {
@@ -44,7 +44,7 @@ public class PasswordService {
     }
 
     private byte[] generateHashedPassword(String password, String saltHex) {
-        String combined = password + saltHex + pepper;
+        String combined = password + saltHex + properties.getPepper();
         byte[] passwordBytes = combined.getBytes();
         try {
             MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
