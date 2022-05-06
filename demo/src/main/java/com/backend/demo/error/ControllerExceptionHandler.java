@@ -1,18 +1,20 @@
 package com.backend.demo.error;
 
 import com.backend.demo.error.exceptions.EntityNotFoundException;
+import com.backend.demo.error.exceptions.UnAuthorizedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 
 @ControllerAdvice
-public class ExceptionHandler extends ResponseEntityExceptionHandler {
+public class ControllerExceptionManager extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable
@@ -24,9 +26,17 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(error);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(EntityNotFoundException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
         Error error = new Error(HttpStatus.NOT_FOUND);
+        error.setMessage(ex.getMessage());
+        return buildResponseEntity(error);
+    }
+
+    @ExceptionHandler(UnAuthorizedException.class)
+    protected ResponseEntity<Object> handleUnAuthorizedException(UnAuthorizedException ex) {
+        Error error = new Error(HttpStatus.UNAUTHORIZED);
+        System.out.println("?????");
         error.setMessage(ex.getMessage());
         return buildResponseEntity(error);
     }
