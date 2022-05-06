@@ -3,6 +3,7 @@ package com.backend.demo.services;
 import com.backend.demo.error.exceptions.EntityNotFoundException;
 import com.backend.demo.models.User;
 import com.backend.demo.repositories.UserRepository;
+import com.backend.demo.security.Jwt;
 import com.backend.demo.services.dto.UserCreationDto;
 import com.backend.demo.services.dto.UserDto;
 import com.backend.demo.services.dto.UserLoginDto;
@@ -18,10 +19,12 @@ import java.util.Optional;
 public class UserService extends BaseService<User, UserDto, UserRepository> {
 
     private final PasswordService passwordService;
+    private final Jwt jwt;
 
-    public UserService(UserRepository userRepository, PasswordService passwordService) {
+    public UserService(UserRepository userRepository, PasswordService passwordService, Jwt jwt) {
         super(userRepository);
         this.passwordService = passwordService;
+        this.jwt = jwt;
     }
 
     public UserDto save(UserCreationDto dto) {
@@ -37,11 +40,13 @@ public class UserService extends BaseService<User, UserDto, UserRepository> {
     }
 
     public UserDto login(UserLoginDto dto) {
-        Optional<User> user = repository.findByEmail(dto.getEmail());
-        if (user.isPresent()) {
-            String hash = passwordService.getHashedPassword(dto.getPassword(), user.get().getSalt());
-            if (hash.equals(user.get().getHash())) {
-                return mapToDto(user.get());
+        Optional<User> Optional = repository.findByEmail(dto.getEmail());
+        if (Optional.isPresent()) {
+            User user = Optional.get();
+            String hash = passwordService.getHashedPassword(dto.getPassword(), user.getSalt());
+            if (hash.equals(user.getHash())) {
+                user.setToken(jwt.getJWTToken(user.getName()));
+                return mapToDto(user);
             }
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password and email does not match");
