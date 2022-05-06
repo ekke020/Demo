@@ -1,8 +1,13 @@
 {
   "properties": [
     {
-      "name": "pw.pepper",
+      "name": "variables.pepper",
       "type": "java.lang.String",
       "description": "Pepper used when hashing passwords."
-  }
-] }
+    },
+    {
+      "name": "variables.jwtKey",
+      "type": "java.lang.String",
+      "description": "Secret key used when hashing JSON web tokens."
+    }
+  ] }
