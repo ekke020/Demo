@@ -4,7 +4,9 @@ spring:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/demo}
     username: ${DATABASE_USERNAME:root}
     password: ${DATABASE_PASSWORD:lol}
-pw.pepper: 3kFlh3C4Yjyktw320AV6
+variables:
+  pepper: 3kFlh3C4Yjyktw320AV6
+  jwtKey: BJtBoMrqpcrl89D6cB8Wftfr5b13iqSg7wPcSDtWxLu911JjupyuQDzHaR9C
 
 ---
 spring:
