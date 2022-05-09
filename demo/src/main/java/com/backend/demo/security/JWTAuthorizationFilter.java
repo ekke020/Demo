@@ -33,7 +33,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getHeader("Authorization") == null) {
+        if (request.getHeader(header) == null) {
             addResponse(response, "Missing header: " + header);
             return;
         }
