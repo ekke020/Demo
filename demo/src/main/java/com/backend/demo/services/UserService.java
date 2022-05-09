@@ -32,6 +32,7 @@ public class UserService extends BaseService<User, UserDto, UserRepository> {
         user.setSalt(passwordService.generateSalt());
         user.setHash(passwordService.getHashedPassword(dto.getPassword(), user.getSalt()));
         try {
+            user.setToken(jwt.getJWTToken(user.getName()));
             user = repository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already registered");
