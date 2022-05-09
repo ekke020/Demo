@@ -3,11 +3,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'warm-black': '#363440',
-        'warm-white': '#F2EDE4',
-        'warm-orange': '#D9843B',
-        'warm-beige': '#F2D1B3',
-        'warm-pink': '#D98F89',
+        'nav-icon-hover': '#B6B6B6',
+        'dark-text': '#363440',
+        'error-text': '#E65232',
+        'first-background': '#F2EDE4',
+        'second-background': '#D9843B',
+        'first-foreground': '#F2D1B3',
+        'second-foreground': '#D98F89',
       },
     },
   },
