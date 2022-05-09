@@ -37,7 +37,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     protected ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex) {
         Error error = new Error(ex.getStatus());
-        error.setMessage(ex.getMessage());
+        error.setMessage(ex.getReason());
         return buildResponseEntity(error);
     }
 
