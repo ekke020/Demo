@@ -10,12 +10,15 @@ import Navbar from './components/Navbar';
 const App = () => {
   const { isLoggedIn } = useSelector((store) => store.user);
 
+  //TODO: Add a logged in alternative to the 'login' path.
+
   return (
     <Router>
       <Navbar />
       <div className='flex justify-center'>
         <Routes>
           <Route path='/' element={<Home />} />
+          <Route path='login' element={isLoggedIn ? <NotFound /> : <Login />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
       </div>
