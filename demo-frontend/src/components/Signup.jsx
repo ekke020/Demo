@@ -11,7 +11,7 @@ const Signup = () => {
   } = useForm();
   const watcher = watch();
   const [error, setError] = useState('');
-
+  //TODO: Figure out what to do with error messages
   useEffect(() => {
     if (!error) {
       const timeId = setTimeout(() => {
