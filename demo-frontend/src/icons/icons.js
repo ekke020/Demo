@@ -1,9 +1,14 @@
-export const fingerPrint = () => {
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+export const FingerPrint = () => {
+  const navigate = useNavigate();
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
       className='h-8 w-8'
       fill='none'
+      onClick={() => navigate('/')}
       viewBox='0 0 24 24'
       stroke='currentColor'
       strokeWidth={2}
@@ -17,12 +22,16 @@ export const fingerPrint = () => {
   );
 };
 
-export const home = () => {
+export const Home = () => {
+  const navigate = useNavigate();
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      className='h-8 w-8'
+      className='
+        h-10 w-10 hover:stroke-nav-icon-hover/40 
+        transition-colors duration-500 ease-linear'
       fill='none'
+      onClick={() => navigate('/')}
       viewBox='0 0 24 24'
       stroke='currentColor'
       strokeWidth={2}
@@ -36,12 +45,16 @@ export const home = () => {
   );
 };
 
-export const login = () => {
+export const Login = () => {
+  const navigate = useNavigate();
   return (
     <svg
       xmlns='http://www.w3.org/2000/svg'
-      className='h-8 w-8 hover:stroke-nav-icon-hover'
+      className='
+        h-10 w-10 hover:stroke-nav-icon-hover/40 
+        transition-colors duration-500 ease-linear'
       fill='none'
+      onClick={() => navigate('/login')}
       viewBox='0 0 24 24'
       stroke='currentColor'
       strokeWidth={2}
