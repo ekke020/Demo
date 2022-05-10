@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { errorToggle } from '../error/loginErrorSlice';
 const axios = require('axios');
 const url = 'http://localhost:8080/user/';
 
@@ -19,7 +20,9 @@ export const loginUser = createAsyncThunk(
       const resp = await axios.post(`${url}login`, credentials);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.message);
+      const message = error.response.data.message;
+      thunkAPI.dispatch(errorToggle(message));
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -46,8 +49,7 @@ const userSlice = createSlice({
       state.isLoggedIn = true;
       state = { ...state, ...action.payload };
     },
-    [loginUser.rejected]: (state, action) => {
-      console.log(action.payload);
+    [loginUser.rejected]: (state) => {
       state.isLoading = false;
     },
   },
