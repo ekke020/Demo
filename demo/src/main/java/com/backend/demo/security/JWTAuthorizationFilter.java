@@ -1,5 +1,7 @@
 package com.backend.demo.security;
 
+import com.backend.demo.config.Properties;
+import com.backend.demo.config.SpringContext;
 import com.backend.demo.error.Error;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +13,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -26,8 +29,11 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private final String header = "Authorization";
     private final String prefix = "Bearer ";
-    @Value("${variables.jwtKey}")
-    private String secret;
+
+
+    private Properties getProperties() {
+        return SpringContext.getBean(Properties.class);
+    }
 
     @Override
     protected void doFilterInternal(
@@ -62,7 +68,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private void validateToken(HttpServletRequest request) throws ExpiredJwtException, MalformedJwtException {
         String jwtToken = request.getHeader(header).replace(prefix, "");
-        Key key = new SecretKeySpec(Base64.getDecoder().decode(secret),
+        Key key = new SecretKeySpec(Base64.getDecoder().decode(getProperties().getJwtKey()),
                 SignatureAlgorithm.HS512.getJcaName());
         Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken);
     }
