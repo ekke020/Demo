@@ -1,5 +1,6 @@
 package com.backend.demo.controllers;
 
+import com.backend.demo.security.Jwt;
 import com.backend.demo.services.UserService;
 import com.backend.demo.services.dto.UserCreationDto;
 import com.backend.demo.services.dto.UserDto;
@@ -27,15 +28,21 @@ class UserControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private Jwt jwt;
+
     @MockBean
     private UserService mockUserService;
-
+    private String jwtToken;
 
     @BeforeEach
     public void init() {
         UserDto u1 = new UserDto(1L, "Adam Andersson", "adam@mail.com");
         UserDto u2 = new UserDto(2L, "Berit Bengtsson", "Berit@mail.com");
         UserDto u3 = new UserDto(3L, "Carl Carlsson", "Carl@mail.com");
+
+
+        jwtToken = jwt.getJWTToken(u1.getName());
 
         when(mockUserService.findById(1L)).thenReturn(u1);
         when(mockUserService.getAll()).thenReturn(Set.of(u1, u2, u3));
@@ -54,6 +61,7 @@ class UserControllerTest {
     @Test
     public void getAllUsers() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/user")
+                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(3));
