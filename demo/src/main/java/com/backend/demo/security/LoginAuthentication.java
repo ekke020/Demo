@@ -17,7 +17,7 @@ public class LoginAuthentication implements AuthenticationProvider {
 
     private final PasswordService passwordService;
     private final UserRepository userRepository;
-
+    //TODO: DOES THIS EVEN DO ANYTHING ATM ?
     public LoginAuthentication(PasswordService passwordService, UserRepository userRepository) {
         this.passwordService = passwordService;
         this.userRepository = userRepository;
