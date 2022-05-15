@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetails;
 
 
 @SpringBootApplication
@@ -25,7 +26,13 @@ public class DemoApplication {
     @Bean
     public CommandLineRunner demo(UserService userService) {
 		return (args) -> {
-			System.out.println(jwt.getJWTToken("Johan Ekman"));
+			UserDetails user = userService.loadUserByUsername("test@test.com");
+			System.out.println(user);
+//			String jws = jwt.generateToken(user);
+//			System.out.println(jws);
+//			System.out.println(jwt.extractEmail(jws));
+//			System.out.println(jwt.extractExpiration(jws));
+//			System.out.println(jwt.isTokenExpired(jws));
 		};
 
 	}
