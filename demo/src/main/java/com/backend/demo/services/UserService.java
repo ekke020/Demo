@@ -9,6 +9,9 @@ import com.backend.demo.services.dto.UserDto;
 import com.backend.demo.services.dto.UserLoginDto;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,7 +19,7 @@ import java.util.Optional;
 
 
 @Service
-public class UserService extends BaseService<User, UserDto, UserRepository> {
+public class UserService extends BaseService<User, UserDto, UserRepository> implements UserDetailsService {
 
     private final PasswordService passwordService;
     private final Jwt jwt;
@@ -51,6 +54,11 @@ public class UserService extends BaseService<User, UserDto, UserRepository> {
             }
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password and email does not match");
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Override
