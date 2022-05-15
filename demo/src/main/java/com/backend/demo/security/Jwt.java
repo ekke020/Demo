@@ -15,16 +15,24 @@ import java.util.Date;
 @Component
 public class Jwt {
 
+    //TODO: Move all JWT logic to this class
+
     private final Properties properties;
+    private final Key key;
 
     public Jwt(Properties properties) {
         this.properties = properties;
+        key = new SecretKeySpec(Base64.getDecoder().decode(properties.getJwtKey()),
+                SignatureAlgorithm.HS512.getJcaName());
+    }
+
+    public String extractEmail(String token) {
+        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        //TODO: Fix this method.
+        return null;
     }
 
     public String getJWTToken(String username) {
-        Key key = new SecretKeySpec(Base64.getDecoder().decode(properties.getJwtKey()),
-                SignatureAlgorithm.HS512.getJcaName());
-
         String token = Jwts
                 .builder()
                 .setSubject(username)
