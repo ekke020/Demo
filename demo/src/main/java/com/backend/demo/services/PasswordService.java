@@ -1,6 +1,7 @@
 package com.backend.demo.services;
 
 import com.backend.demo.config.Properties;
+import com.backend.demo.models.User;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,11 @@ public class PasswordService {
         SecureRandom rand = new SecureRandom();
         rand.nextBytes(salt);
         return String.valueOf(Hex.encodeHex(salt));
+    }
+
+    public boolean matches(String password, User user) {
+        String hash = getHashedPassword(password, user.getSalt());
+        return hash.equals(user.getHash());
     }
 
     public String getHashedPassword(String password, String salt) {
