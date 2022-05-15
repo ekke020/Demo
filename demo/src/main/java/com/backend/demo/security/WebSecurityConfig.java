@@ -18,23 +18,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JWTAuthorizationFilter jwtAuthorizationFilter;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
-    private final LoginAuthentication loginAuthentication;
+//    private final LoginAuthentication loginAuthentication;
     private final UserService userService;
 
     public WebSecurityConfig(
             JWTAuthorizationFilter jwtAuthorizationFilter,
             ExceptionHandlerFilter exceptionHandlerFilter,
-            LoginAuthentication loginAuthentication, UserService userService) {
+            UserService userService) {
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
         this.exceptionHandlerFilter = exceptionHandlerFilter;
-        this.loginAuthentication = loginAuthentication;
+//        this.loginAuthentication = loginAuthentication;
         this.userService = userService;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .authenticationProvider(loginAuthentication)
+//                .authenticationProvider(loginAuthentication)
                 .userDetailsService(userService);
     }
 
@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((auth) -> auth
-                        .antMatchers("/user/login").permitAll()
+                        .antMatchers("/user/login", "/user/add").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(exceptionHandlerFilter, LogoutFilter.class)
