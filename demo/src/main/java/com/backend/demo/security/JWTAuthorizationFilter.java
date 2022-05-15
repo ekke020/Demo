@@ -1,18 +1,11 @@
 package com.backend.demo.security;
 
 import com.backend.demo.config.Properties;
-import com.backend.demo.config.SpringContext;
-import com.backend.demo.error.Error;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.backend.demo.error.exceptions.FilterException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,52 +17,50 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Key;
 import java.util.Base64;
+import java.util.List;
 
+@Component
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
+    private final List<String> ignoredPaths = List.of("/user/login", "/user/add");
     private final String header = "Authorization";
     private final String prefix = "Bearer ";
+    private final Properties properties;
 
+    public JWTAuthorizationFilter(Properties properties) {
+        this.properties = properties;
+    }
 
-    private Properties getProperties() {
-        return SpringContext.getBean(Properties.class);
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return ignoredPaths.stream().anyMatch(e -> e.matches(path));
     }
 
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         if (request.getHeader(header) == null) {
-            addResponse(response, "Missing header: " + header);
-            return;
+            throw new FilterException("Missing header: " + header, 400);
         }
-        try {
-            validateToken(request);
-        } catch (ExpiredJwtException e) {
-            // TODO: Add more info about time here.
-            addResponse(response, "Error validating access token: Session has expired.");
-        } catch (MalformedJwtException e) {
-            addResponse(response, "Error validating access token: Malformed token.");
-        }
+        validateToken(request);
+        filterChain.doFilter(request, response);
     }
 
-    private void addResponse(HttpServletResponse response, String message) throws IOException {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        Error error = new Error(HttpStatus.UNAUTHORIZED, message);
-        response.getWriter().write(writeErrorAsJSON(error));
-    }
-
-    private String writeErrorAsJSON(Error error) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper()
-                .registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule());
-        return mapper.writeValueAsString(error);
-    }
-
-    private void validateToken(HttpServletRequest request) throws ExpiredJwtException, MalformedJwtException {
+    private void validateToken(HttpServletRequest request) {
         String jwtToken = request.getHeader(header).replace(prefix, "");
-        Key key = new SecretKeySpec(Base64.getDecoder().decode(getProperties().getJwtKey()),
+        Key key = new SecretKeySpec(Base64.getDecoder().decode(properties.getJwtKey()),
                 SignatureAlgorithm.HS512.getJcaName());
-        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken);
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken);
+        } catch (ExpiredJwtException e) {
+            throw new FilterException("Error validating access token: Session has expired.", 401);
+        } catch (MalformedJwtException e) {
+            throw new FilterException("Error validating access token: Malformed token.", 401);
+        }
+        //TODO: Add UsernameAndPasswordToken class
     }
+
 }
