@@ -35,7 +35,6 @@ public class UserService extends BaseService<User, UserDto, UserRepository> impl
         user.setSalt(passwordService.generateSalt());
         user.setHash(passwordService.getHashedPassword(dto.getPassword(), user.getSalt()));
         try {
-            user.setToken(jwt.getJWTToken(user.getName()));
             user = repository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already registered");
@@ -49,7 +48,7 @@ public class UserService extends BaseService<User, UserDto, UserRepository> impl
             User user = Optional.get();
             String hash = passwordService.getHashedPassword(dto.getPassword(), user.getSalt());
             if (hash.equals(user.getHash())) {
-                user.setToken(jwt.getJWTToken(user.getName()));
+//                user.setToken(jwt.generateToken(user.getName()));
                 return mapToDto(user);
             }
         }
