@@ -1,5 +1,6 @@
 package com.backend.demo.controllers;
 
+import com.backend.demo.models.User;
 import com.backend.demo.security.Jwt;
 import com.backend.demo.services.UserService;
 import com.backend.demo.services.dto.UserCreationDto;
@@ -8,9 +9,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -28,7 +33,7 @@ class UserControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
+    @MockBean
     private Jwt jwt;
 
     @MockBean
@@ -41,12 +46,15 @@ class UserControllerTest {
         UserDto u2 = new UserDto(2L, "Berit Bengtsson", "Berit@mail.com");
         UserDto u3 = new UserDto(3L, "Carl Carlsson", "Carl@mail.com");
 
-
-        jwtToken = jwt.getJWTToken(u1.getName());
-
         when(mockUserService.findById(1L)).thenReturn(u1);
         when(mockUserService.getAll()).thenReturn(Set.of(u1, u2, u3));
         when(mockUserService.save(any())).thenReturn(u1);
+    }
+
+    @Test
+    public void missingHeaderReturns400() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/user")).andExpect(status().isBadRequest());
+        mvc.perform(MockMvcRequestBuilders.get("/user/1")).andExpect(status().isBadRequest());
     }
 
     @Test
