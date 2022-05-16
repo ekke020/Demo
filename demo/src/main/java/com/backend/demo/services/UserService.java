@@ -19,7 +19,7 @@ import java.util.Optional;
 
 
 @Service
-public class UserService extends BaseService<User, UserDto, UserRepository> implements UserDetailsService {
+public class UserService extends BaseService<User, UserDto, UserRepository> {
 
     private final PasswordService passwordService;
     private final Jwt jwt;
@@ -48,17 +48,14 @@ public class UserService extends BaseService<User, UserDto, UserRepository> impl
             User user = Optional.get();
             String hash = passwordService.getHashedPassword(dto.getPassword(), user.getSalt());
             if (hash.equals(user.getHash())) {
-//                user.setToken(jwt.generateToken(user.getName()));
+//                user.setToken(jwt.generateToken(user));
+                //TODO: CLEAN THIS UP
                 return mapToDto(user);
             }
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password and email does not match");
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
 
     @Override
     public UserDto findById(Long id) {
