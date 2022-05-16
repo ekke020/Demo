@@ -1,6 +1,7 @@
 package com.backend.demo;
 
 import com.backend.demo.security.Jwt;
+import com.backend.demo.services.AuthenticationService;
 import com.backend.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -24,12 +25,12 @@ public class DemoApplication {
 
 
     @Bean
-    public CommandLineRunner demo(UserService userService) {
+    public CommandLineRunner demo(AuthenticationService authenticationService) {
 		return (args) -> {
-			UserDetails user = userService.loadUserByUsername("test@test.com");
+			UserDetails user = authenticationService.loadUserByUsername("ekman-johan020@hotmail.com");
 			System.out.println(user);
-//			String jws = jwt.generateToken(user);
-//			System.out.println(jws);
+			String jws = jwt.generateToken(user);
+			System.out.println(jws);
 //			System.out.println(jwt.extractEmail(jws));
 //			System.out.println(jwt.extractExpiration(jws));
 //			System.out.println(jwt.isTokenExpired(jws));

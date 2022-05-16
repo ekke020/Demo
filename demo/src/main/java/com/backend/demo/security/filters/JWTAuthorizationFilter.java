@@ -1,16 +1,12 @@
 package com.backend.demo.security;
 
-import com.backend.demo.config.Properties;
 import com.backend.demo.error.exceptions.FilterException;
-import com.backend.demo.models.User;
 import com.backend.demo.services.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -67,7 +63,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         } catch (MalformedJwtException e) {
             throw new FilterException("Error validating access token: Malformed token.", 401);
         }
-        //TODO: Add UsernameAndPasswordToken class
     }
 
 }
