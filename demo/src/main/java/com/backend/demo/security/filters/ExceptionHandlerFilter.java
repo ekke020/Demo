@@ -1,4 +1,4 @@
-package com.backend.demo.security;
+package com.backend.demo.security.filters;
 
 import com.backend.demo.error.Error;
 import com.backend.demo.error.exceptions.FilterException;

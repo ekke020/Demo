@@ -1,6 +1,8 @@
-package com.backend.demo.security;
+package com.backend.demo.security.filters;
 
 import com.backend.demo.error.exceptions.FilterException;
+import com.backend.demo.security.Jwt;
+import com.backend.demo.services.AuthenticationService;
 import com.backend.demo.services.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -25,11 +27,11 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     private final String header = "Authorization";
     private final String prefix = "Bearer ";
     private final Jwt jwt;
-    private final UserService userService;
+    private final AuthenticationService authenticationService;
 
-    public JWTAuthorizationFilter(Jwt jwt, UserService userService) {
+    public JWTAuthorizationFilter(Jwt jwt, AuthenticationService authenticationService) {
         this.jwt = jwt;
-        this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
     @Override
@@ -54,7 +56,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
         String jws = request.getHeader(header).replace(prefix, "");
         try {
             jwt.isTokenExpired(jws);
-            UserDetails user = userService.loadUserByUsername(jwt.extractEmail(jws));
+            UserDetails user = authenticationService.loadUserByUsername(jwt.extractEmail(jws));
             var upa = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             upa.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(upa);
