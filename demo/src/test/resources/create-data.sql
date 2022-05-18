@@ -1,104 +1,38 @@
 INSERT INTO
-    USER (ID, NAME, EMAIL, SALT, HASH)
+    USER (ID, NAME, EMAIL, PASSWORD)
 VALUES
     (
         1,
-        'Adam Andersson',
-        'adam@mail.com',
-        'a50795b4ea93f4c51f88b3174fdb353d',
-        '0ef57ba8904e095c6ce3276964bb70af46b29d57cabdeafdc070a72817ac1a0f'
+        'Test',
+        'test@test.com',
+        '95 22|5cd182d2134d7433818f55ae69d053938b298e558830677067a1883473422be867fa99b3ee5e101fa04d742e08793943'
     ),
     (
         2,
-        'Berit Bengtsson',
-        'berit@mail.com',
-        'd0287a395a3e95b28f19d778da166209',
-        'aa1647c5fa4a86d279b3d031c3aa503cf6b5401de44ea2fd6ed4530d52446b65'
+        'Test2',
+        'test2@test.com',
+        '42 53|2725318d244d5e426d534c2586b961d7e60387223b1118f642fa879907608e9c676be28bf3b33eb4675f01dd63955441'
     ),
     (
         3,
-        'Carl Carlsson',
-        'carl@mail.com',
-        '79f88e368fb6c33ff0c6a3fc289a0d0e',
-        '97c0fddf8d41d3430152fe9eebcde1721b2a6c0a3391cf9ba1cbb4336edf412b'
+        'Test3',
+        'test3@test.com',
+        '69 25|52c65e208a38e7ad559c002a550fa61563cf744092881dcc70dbcbc5da064090d0b89f7301e4f8261941013ea7491c0b'
     );
 
 INSERT INTO
-    PRODUCT (id, base64, name, price)
+    AUTHORITY (ID, NAME)
 VALUES
-    (
-        4,
-        'awndandakoamdwamdadwadoad7991823',
-        'Mango',
-        15.9
-    ),
-    (
-        5,
-        'könmawldnadjaidja00112adawawadasd',
-        'Banana',
-        22.0
-    ),
-    (
-        6,
-        'knajdnawipdanpåawokdp001ölmawdawdklöm',
-        'Apple',
-        11.99
-    );
+    (1, 'BASIC'),
+    (2, 'MODERATOR'),
+    (3, 'ADMIN');
+
 INSERT INTO
-    ORDER_TABLE (id, created_at, user_id)
+    USER_AUTHORITIES (USER_ID, AUTHORITIES_ID)
 VALUES
-    (
-        7,
-        CURRENT_TIMESTAMP(),
-        1
-    ),
-    (
-        8,
-        CURRENT_TIMESTAMP(),
-        1
-    ),
-    (
-        9,
-        CURRENT_TIMESTAMP(),
-        1
-    ),
-    (
-        10,
-        CURRENT_TIMESTAMP(),
-        2
-    );
-INSERT INTO
-    ORDER_TABLE_PRODUCTS (order_id, products_id)
-VALUES
-    (
-        7,
-        4
-    ),
-    (
-        7,
-        5
-    ),
-    (
-        8,
-        4
-    ),
-    (
-        8,
-        6
-    ),
-    (
-        9,
-        4
-    ),
-    (
-        9,
-        5
-    ),
-    (
-        9,
-        6
-    ),
-    (
-        10,
-        6
-    );
+    (1, 1),
+    (2, 1),
+    (2, 2),
+    (3, 1),
+    (3, 2),
+    (3, 3);
