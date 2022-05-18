@@ -6,11 +6,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-public class UserLoginDto {
+public class LoginDto {
 
     @Email
     @NotEmpty
-    private String email;
+    private final String email;
     @NotEmpty
-    private String password;
+    private final String password;
 }
