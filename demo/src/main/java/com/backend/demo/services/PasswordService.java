@@ -1,15 +1,17 @@
 package com.backend.demo.services;
 
 import com.backend.demo.config.Properties;
-import com.backend.demo.models.User;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Random;
 
 
 @Service
@@ -22,21 +24,17 @@ public class PasswordService {
     }
 
     public boolean matches(String password, String storedHash) {
-        String[] parts = storedHash.split("\\.");
-        String saltHex = decodeHex(parts[1]);
+        PasswordHandler.unObfuscate(storedHash);
+        String saltHex = decodeHex(PasswordHandler.storedSalt);
         String hash = generateHashedPassword(password, saltHex);
-        return parts[0].equals(hash);
+        return PasswordHandler.storedHash.equals(hash);
     }
 
     public String hashPassword(String password) {
         String salt = generateSalt();
         String saltHex = decodeHex(salt);
         String hash = generateHashedPassword(password, saltHex);
-        return combineHash(hash, salt);
-    }
-
-    private String combineHash(String hash, String salt) {
-        return hash + "." + salt;
+        return PasswordHandler.obfuscate(hash + salt);
     }
 
     private String generateSalt() {
@@ -69,4 +67,54 @@ public class PasswordService {
         }
     }
 
+    private final static class PasswordHandler {
+
+        private static String storedHash;
+        private static String storedSalt;
+
+        private static String obfuscate(String hash) {
+            Random rand = new Random();
+            int loops = rand.nextInt(100);
+            int targetIndex = rand.nextInt(hash.length());
+
+            for (int i = 0; i < loops; i++) {
+                for (int j = 0; j < hash.length(); j++) {
+                    hash = switchChars(hash, j, targetIndex);
+                }
+            }
+            return targetIndex + " " + loops + "|" + hash;
+        }
+
+        private static void unObfuscate(String hash) {
+            String[] parts = hash.split("\\|");
+            int[] numbers = Arrays.stream(parts[0].split(" ")).mapToInt(Integer::valueOf).toArray();
+            int targetIndex = numbers[0];
+            int loops = numbers[1];
+            hash = parts[1];
+
+            for (int i = 0; i < loops; i++) {
+                for (int j = hash.length() - 1; j >= 0; j--) {
+                    hash = switchChars(hash, j, targetIndex);
+                }
+            }
+            storedHash = hash.substring(0, 64);
+            storedSalt = hash.substring(64);
+        }
+
+        private static String switchChars(String hash, int start, int end) {
+            char[] chars = hash.toCharArray();
+            int nextPos = calculatePosition(start + end, chars.length - 1);
+            char moving = chars[start];
+            char target = chars[nextPos];
+            chars[start] = target;
+            chars[nextPos] = moving;
+            return String.valueOf(chars);
+        }
+
+        private static int calculatePosition(int targetIndex, int totalIndex) {
+            return targetIndex > totalIndex
+                    ? targetIndex - totalIndex
+                    : targetIndex;
+        }
+    }
 }
