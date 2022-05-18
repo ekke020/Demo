@@ -19,14 +19,10 @@ public class User {
     private String name;
     @Column(unique = true)
     private String email;
-    private String hash;
-    @Transient
-    private String token;
-    private String authority;
+    private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-    private List<Authority> authorities = new ArrayList<>();
-
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private final List<Authority> authorities = new ArrayList<>();
 
     public User(Long id, String name, String email) {
         this.id = id;
