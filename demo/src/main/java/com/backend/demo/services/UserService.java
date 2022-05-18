@@ -4,14 +4,13 @@ import com.backend.demo.error.exceptions.EntityNotFoundException;
 import com.backend.demo.models.User;
 import com.backend.demo.repositories.UserRepository;
 import com.backend.demo.security.Jwt;
+import com.backend.demo.security.SecurityUser;
+import com.backend.demo.services.dto.TokenDto;
 import com.backend.demo.services.dto.UserCreationDto;
 import com.backend.demo.services.dto.UserDto;
 import com.backend.demo.services.dto.UserLoginDto;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,8 +31,7 @@ public class UserService extends BaseService<User, UserDto, UserRepository> {
 
     public UserDto save(UserCreationDto dto) {
         User user = mapper.map(dto, User.class);
-        user.setSalt(passwordService.generateSalt());
-        user.setHash(passwordService.getHashedPassword(dto.getPassword(), user.getSalt()));
+        user.setHash(passwordService.hashPassword(dto.getPassword()));
         try {
             user = repository.save(user);
         } catch (DataIntegrityViolationException e) {
@@ -42,20 +40,17 @@ public class UserService extends BaseService<User, UserDto, UserRepository> {
         return mapToDto(user);
     }
 
-    public UserDto login(UserLoginDto dto) {
+    public TokenDto login(UserLoginDto dto) {
         Optional<User> Optional = repository.findByEmail(dto.getEmail());
         if (Optional.isPresent()) {
             User user = Optional.get();
-            String hash = passwordService.getHashedPassword(dto.getPassword(), user.getSalt());
-            if (hash.equals(user.getHash())) {
-//                user.setToken(jwt.generateToken(user));
-                //TODO: CLEAN THIS UP
-                return mapToDto(user);
+            if (passwordService.matches(dto.getPassword(), user.getHash())) {
+                SecurityUser securityUser = new SecurityUser(user);
+                return new TokenDto(jwt.generateToken(securityUser));
             }
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Password and email does not match");
     }
-
 
     @Override
     public UserDto findById(Long id) {
