@@ -3,9 +3,6 @@ package com.backend.demo.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.*;
@@ -22,11 +19,14 @@ public class User {
     private String name;
     @Column(unique = true)
     private String email;
-    private String salt;
     private String hash;
     @Transient
     private String token;
     private String authority;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private List<Authority> authorities = new ArrayList<>();
+
 
     public User(Long id, String name, String email) {
         this.id = id;
