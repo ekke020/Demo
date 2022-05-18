@@ -21,22 +21,29 @@ public class PasswordService {
         this.properties = properties;
     }
 
-    public String generateSalt() {
+    public boolean matches(String password, String storedHash) {
+        String[] parts = storedHash.split("\\.");
+        String saltHex = decodeHex(parts[1]);
+        String hash = generateHashedPassword(password, saltHex);
+        return parts[0].equals(hash);
+    }
+
+    public String hashPassword(String password) {
+        String salt = generateSalt();
+        String saltHex = decodeHex(salt);
+        String hash = generateHashedPassword(password, saltHex);
+        return combineHash(hash, salt);
+    }
+
+    private String combineHash(String hash, String salt) {
+        return hash + "." + salt;
+    }
+
+    private String generateSalt() {
         byte[] salt = new byte[16];
         SecureRandom rand = new SecureRandom();
         rand.nextBytes(salt);
         return String.valueOf(Hex.encodeHex(salt));
-    }
-
-    public boolean matches(String password, User user) {
-        String hash = getHashedPassword(password, user.getSalt());
-        return hash.equals(user.getHash());
-    }
-
-    public String getHashedPassword(String password, String salt) {
-        String saltHex = decodeHex(salt);
-        byte[] hashedBytes = generateHashedPassword(password, saltHex);
-        return String.valueOf(Hex.encodeHex(hashedBytes));
     }
 
     private String decodeHex(String salt) {
@@ -49,13 +56,14 @@ public class PasswordService {
         return null;
     }
 
-    private byte[] generateHashedPassword(String password, String saltHex) {
+    private String generateHashedPassword(String password, String saltHex) {
         String combined = password + saltHex + properties.getPepper();
         byte[] passwordBytes = combined.getBytes();
         try {
             MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
             sha256.update(passwordBytes);
-            return sha256.digest();
+            byte[] hashedBytes = sha256.digest();
+            return String.valueOf(Hex.encodeHex(hashedBytes));
         } catch (NoSuchAlgorithmException e) {
             return null;
         }
