@@ -31,7 +31,7 @@ class UserControllerTest {
 
     @Autowired
     private MockMvc mvc;
-"Changed from @WebMvcTest to @SpringBootTest"
+
     @Autowired
     private Jwt jwt;
 
