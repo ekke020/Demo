@@ -31,8 +31,8 @@ public class UserRepositoryTest {
     public void findByIdShouldReturnOne() {
         User user = userRepository.findById(1L).orElse(null);
         Assertions.assertNotNull(user);
-        Assertions.assertEquals(user.getName(), "Adam Andersson");
-        Assertions.assertEquals(user.getEmail(), "adam@mail.com");
+        Assertions.assertEquals(user.getName(), "Test");
+        Assertions.assertEquals(user.getEmail(), "test@test.com");
     }
 
     @Test
@@ -44,7 +44,7 @@ public class UserRepositoryTest {
 
     @Test
     public void findByEmailReturnsUserOnValidEmail() {
-        User user = userRepository.findByEmail("carl@mail.com").orElse(null);
+        User user = userRepository.findByEmail("test3@test.com").orElse(null);
         Assertions.assertNotNull(user);
         Assertions.assertEquals(user.getId(), 3L);
         user = userRepository.findByEmail("notReal@mail.com").orElse(null);
