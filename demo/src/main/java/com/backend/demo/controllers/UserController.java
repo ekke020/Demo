@@ -2,6 +2,7 @@ package com.backend.demo.controllers;
 
 import com.backend.demo.models.User;
 import com.backend.demo.services.UserService;
+import com.backend.demo.services.dto.TokenDto;
 import com.backend.demo.services.dto.UserCreationDto;
 import com.backend.demo.services.dto.UserDto;
 import com.backend.demo.services.dto.UserLoginDto;
@@ -28,8 +29,8 @@ public class UserController extends BaseController<User, UserDto, UserService> {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@Valid @RequestBody UserLoginDto userLoginDto) {
-        UserDto dto = service.login(userLoginDto);
+    public ResponseEntity<TokenDto> login(@Valid @RequestBody UserLoginDto userLoginDto) {
+        TokenDto dto = service.login(userLoginDto);
         return ResponseEntity.status(200).body(dto);
     }
 
