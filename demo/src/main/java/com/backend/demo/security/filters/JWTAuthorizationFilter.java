@@ -6,6 +6,7 @@ import com.backend.demo.services.AuthenticationService;
 import com.backend.demo.services.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,18 +22,14 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
+@AllArgsConstructor
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
-    private final List<String> ignoredPaths = List.of("/user/login", "/user/add");
+    private final List<String> ignoredPaths = List.of("/login", "/user/add");
     private final String header = "Authorization";
     private final String prefix = "Bearer ";
     private final Jwt jwt;
     private final AuthenticationService authenticationService;
-
-    public JWTAuthorizationFilter(Jwt jwt, AuthenticationService authenticationService) {
-        this.jwt = jwt;
-        this.authenticationService = authenticationService;
-    }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
