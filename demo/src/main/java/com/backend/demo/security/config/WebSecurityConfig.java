@@ -2,10 +2,12 @@ package com.backend.demo.security.config;
 
 import com.backend.demo.security.filters.ExceptionHandlerFilter;
 import com.backend.demo.security.filters.JWTAuthorizationFilter;
+import com.backend.demo.services.PasswordService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -39,4 +41,10 @@ public class WebSecurityConfig {
                 .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(PasswordService passwordService) {
+        return new Encoder(passwordService);
+    }
+
 }
