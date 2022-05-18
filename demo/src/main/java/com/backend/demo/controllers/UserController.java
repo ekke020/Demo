@@ -2,10 +2,9 @@ package com.backend.demo.controllers;
 
 import com.backend.demo.models.User;
 import com.backend.demo.services.UserService;
-import com.backend.demo.services.dto.TokenDto;
 import com.backend.demo.services.dto.UserCreationDto;
 import com.backend.demo.services.dto.UserDto;
-import com.backend.demo.services.dto.UserLoginDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,13 +24,7 @@ public class UserController extends BaseController<User, UserDto, UserService> {
     @PostMapping("/add")
     public ResponseEntity<UserDto> add(@Valid @RequestBody UserCreationDto userCreationDto) {
         UserDto dto = service.save(userCreationDto);
-        return ResponseEntity.ok(dto);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@Valid @RequestBody UserLoginDto userLoginDto) {
-        TokenDto dto = service.login(userLoginDto);
-        return ResponseEntity.status(200).body(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
 }
